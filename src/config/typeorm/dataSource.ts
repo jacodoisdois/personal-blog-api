@@ -4,11 +4,15 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
-export const dataSourceOptions: DataSourceOptions = {
-  type: 'mysql',
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  ...config
+const createDataSource = (): DataSource => {
+  const dataSourceOptions: DataSourceOptions = {
+    type: 'mysql',
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    ...config
+  }
+  return new DataSource(dataSourceOptions)
 }
-const dataSource = new DataSource(dataSourceOptions)
-export default dataSource
+
+export const DATASOURCE = Symbol.for('DATASOURCE')
+export default createDataSource

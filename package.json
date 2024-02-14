@@ -22,7 +22,9 @@
     "@types/yargs": "^17.0.32",
     "express": "^4.18.2",
     "inversify": "^6.0.2",
+    "inversify-express-utils": "^6.4.6",
     "mysql": "^2.18.1",
+    "reflect-metadata": "^0.2.1",
     "typeorm": "0.3.17",
     "yargs": "^17.7.2"
   },

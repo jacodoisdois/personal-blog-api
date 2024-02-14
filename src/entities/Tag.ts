@@ -17,4 +17,8 @@ export class Tag {
 
   @UpdateDateColumn()
     updatedAt: Date
+
+  constructor (name: string) {
+    this.name = name
+  }
 }

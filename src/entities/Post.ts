@@ -24,4 +24,11 @@ export class Post {
 
   @UpdateDateColumn()
     updatedAt: Date
+
+  constructor (title: string, content: string, tags: string[], visible: boolean) {
+    this.title = title
+    this.content = content
+    this.tags = tags.map(tagName => new Tag(tagName))
+    this.visible = visible
+  }
 }
