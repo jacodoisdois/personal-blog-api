@@ -1,4 +1,4 @@
-import { type Post } from '../../entities/Post'
+import { type Post } from '../entities/Post'
 export const POST_REPOSITORY = Symbol.for('PostRepository')
 
 export interface IPostRepository {

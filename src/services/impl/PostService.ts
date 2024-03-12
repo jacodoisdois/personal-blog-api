@@ -1,25 +1,33 @@
 import { inject, injectable } from 'inversify'
 import { type IPostService } from '../IPostService'
 import { Post } from '../../entities/Post'
-import { PostRepository } from '../../repositories/PostRepository'
-import { POST_REPOSITORY } from '../../repositories/impl/IPostRepository'
+import { PostRepository } from '../../repositories/impl/PostRepository'
+import { POST_REPOSITORY } from '../../repositories/IPostRepository'
+import { TAG_SERVICE } from '../ITagService'
+import { TagService } from './TagService'
+import { Tag } from '../../entities/Tag'
 
 @injectable()
 export class PostService implements IPostService {
   private readonly postRepository: PostRepository
+  private readonly tagService: TagService
 
-  constructor (@inject(POST_REPOSITORY) postRepository: PostRepository) {
+  constructor (@inject(POST_REPOSITORY) postRepository: PostRepository,
+    @inject(TAG_SERVICE) tagService: TagService) {
     this.postRepository = postRepository
+    this.tagService = tagService
   }
 
-  async createPost (title: string, content: string, tags: string[], visible: boolean): Promise<void> {
+  async createPostAndTags (title: string, content: string, tags: string[], visible: boolean): Promise<void> {
     try {
-      console.log('teste')
-      const post = new Post(title, content, tags, visible)
+      console.log('Trying to create a post')
+      const post = new Post(title, content, visible)
+      const postTags = await this.tagService.createTags(tags.map(tag => new Tag(tag)))
+      post.tags = postTags
       await this.postRepository.savePost(post)
-      console.log('Created!')
+      console.log(`Created Post with Id ${post.id}!`)
     } catch (e) {
-      console.log(e)
+      throw new Error('Error when tried to create a Post' + e)
     }
   }
 }

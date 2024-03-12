@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryColumn, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn } from 'typeorm'
+import { Entity, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
 import { Tag } from './Tag'
+import { v4 as uuidv4 } from 'uuid'
 
 @Entity()
 export class Post {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
     id: string
 
   @Column()
@@ -12,9 +13,11 @@ export class Post {
   @Column('text')
     content: string
 
-  @ManyToMany(() => Tag, (tag) => tag.posts)
+  @ManyToMany(() => Tag, (tag) => tag.posts, {
+    cascade: true
+  })
   @JoinTable()
-    tags: Tag[]
+    tags: Tag[] | null
 
   @Column()
     visible: boolean
@@ -25,10 +28,14 @@ export class Post {
   @UpdateDateColumn()
     updatedAt: Date
 
-  constructor (title: string, content: string, tags: string[], visible: boolean) {
+  constructor (title: string, content: string, visible: boolean) {
     this.title = title
     this.content = content
-    this.tags = tags.map(tagName => new Tag(tagName))
     this.visible = visible
+  }
+
+  @BeforeInsert()
+  setId (): void {
+    this.id = uuidv4()
   }
 }

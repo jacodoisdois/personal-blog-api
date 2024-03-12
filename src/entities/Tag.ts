@@ -1,12 +1,13 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm'
+import { BeforeInsert, Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { Post } from './Post'
+import { v4 as uuidv4 } from 'uuid'
 
 @Entity()
 export class Tag {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
     id: string
 
-  @Column()
+  @Column({ unique: true })
     name: string
 
   @ManyToMany(() => Post, (post) => post.tags)
@@ -20,5 +21,10 @@ export class Tag {
 
   constructor (name: string) {
     this.name = name
+  }
+
+  @BeforeInsert()
+  setId (): void {
+    this.id = uuidv4()
   }
 }

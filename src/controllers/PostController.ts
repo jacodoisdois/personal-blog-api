@@ -22,7 +22,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
     try {
       const { title, content, tags, visible } = req.body
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      await this.postService.createPost(title, content, tags, visible)
+      await this.postService.createPostAndTags(title, content, tags, visible)
       res.sendStatus(201)
     } catch (err) {
       res.status(400).json({ error: err.message })
