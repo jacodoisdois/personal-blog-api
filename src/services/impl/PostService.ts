@@ -19,14 +19,16 @@ export class PostService implements IPostService {
     this.tagService = tagService
   }
 
-  async createPostAndTags (title: string, content: string, tags: string[], visible: boolean): Promise<void> {
+  async createPostAndTags (title: string, content: string, tags: string[], visible: boolean): Promise<Post> {
     try {
       console.log('Trying to create a post')
       const post = new Post(title, content, visible)
       const postTags = await this.tagService.createTags(tags.map(tag => new Tag(tag)))
       post.tags = postTags
-      await this.postRepository.savePost(post)
-      console.log(`Created Post with Id ${post.id}!`)
+      const postCreated = await this.postRepository.savePost(post)
+
+      console.log(`Created Post with Id ${postCreated.id}!`)
+      return postCreated
     } catch (e) {
       throw new Error('Error when tried to create a Post' + e)
     }

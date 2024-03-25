@@ -22,9 +22,9 @@ export class PostController extends BaseHttpController implements interfaces.Con
   public async createPost (@request() req: express.Request, @response() res: express.Response): Promise<void> {
     try {
       const { title, content, tags, visible } = req.body as createPostBody
-      await this.postService.createPostAndTags(title, content, tags, visible)
+      const postCreated = await this.postService.createPostAndTags(title, content, tags, visible)
 
-      res.sendStatus(201)
+      res.status(201).json(postCreated)
     } catch (err) {
       res.status(400).json({ error: err })
     }
@@ -36,7 +36,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
       const body = req.body as paginatedBody
       const data = await this.postService.getPosts(body.page, body.pageSize)
 
-      res.sendStatus(200).json(
+      res.status(200).json(
         data
       )
     } catch (err) {
@@ -49,7 +49,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
     try {
       const data = await this.postService.getPost(id)
 
-      res.sendStatus(200).json(
+      res.status(200).json(
         data
       )
     } catch (err) {
@@ -72,7 +72,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
           visible: body.visible
         })
 
-      res.sendStatus(200).json(
+      res.status(200).json(
         data
       )
     } catch (err) {
@@ -89,7 +89,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
     try {
       await this.postService.deletePost(id)
 
-      res.sendStatus(204)
+      res.status(204)
     } catch (err) {
       if (err instanceof EntityNotFoundError) res.status(404).json({ error: err })
       res.status(400).json({ error: err })

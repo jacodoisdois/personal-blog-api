@@ -1,89 +1,101 @@
 import { Post } from '../../entities/Post'
 import { type IPostRepository } from '../IPostRepository'
 import { inject, injectable } from 'inversify'
-import { type IDataSourceService } from '../../services/IDataSourceService'
+import { IDataSourceService } from '../../services/IDataSourceService'
 import { DATASOURCE_SERVICE } from '../../services/impl/DataSourceService'
-import { TAG_SERVICE, type ITagService } from '../../services/ITagService'
 import { type updatePostInput, type paginatedResponse } from '../../types/types'
 import { EntityNotFoundError } from 'typeorm'
 
 @injectable()
 export class PostRepository implements IPostRepository {
   private readonly dataSource: IDataSourceService
-  private readonly tagService: ITagService
 
-  constructor (@inject(DATASOURCE_SERVICE) dataSource: IDataSourceService,
-    @inject(TAG_SERVICE) tagService: ITagService) {
+  constructor (
+  @inject(DATASOURCE_SERVICE) dataSource: IDataSourceService
+  ) {
     this.dataSource = dataSource
-    this.tagService = tagService
   }
 
-  async savePost (post: Post): Promise<void> {
+  async savePost (post: Post): Promise<Post> {
     try {
       const postRepository = await this.dataSource.getRepository(Post)
-      await postRepository.save(post)
-    } catch (e) {
-      throw new Error(`EntityCreationError: ${e}`)
+      return await postRepository.save(post)
+    } catch (error) {
+      throw new Error(`Failed to save post: ${error.message}`)
     }
   }
 
   async getPaginatedPosts (page: number = 1, pageSize: number = 10): Promise<paginatedResponse<Post>> {
-    const postRepository = await this.dataSource.getRepository(Post)
+    try {
+      const postRepository = await this.dataSource.getRepository(Post)
+      const [data, total] = await postRepository.findAndCount({
+        relations: ['tags'],
+        skip: (page - 1) * pageSize,
+        take: pageSize
+      })
 
-    const [data, total] = await postRepository.findAndCount({
-      relations: ['tags'],
-      skip: (page - 1) * pageSize,
-      take: pageSize
-    })
-
-    return {
-      data,
-      pageInfo: {
-        pageSize,
-        totalPages: Math.ceil(total / pageSize)
+      return {
+        data,
+        pageInfo: {
+          pageSize,
+          totalPages: Math.ceil(total / pageSize)
+        }
       }
+    } catch (error) {
+      throw new Error(`Failed to get paginated posts: ${error.message}`)
     }
   }
 
   async getPost (id: string): Promise<Post> {
-    const postRepository = await this.dataSource.getRepository(Post)
+    try {
+      const postRepository = await this.dataSource.getRepository(Post)
+      const data = await postRepository.findOneOrFail({ where: { id }, relations: ['tags'] })
 
-    const data = await postRepository.find({
-      where: {
-        id
-      },
-      relations: ['tags']
-    }) as unknown as Post[]
-
-    if (data.length === 0) throw new EntityNotFoundError(Post, 'id')
-
-    return data[0]
+      return data
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new Error(`Post not found with ID ${id}`)
+      } else {
+        throw new Error(`Failed to get post: ${error.message}`)
+      }
+    }
   }
 
   async deletePost (id: string): Promise<void> {
-    const postRepository = await this.dataSource.getRepository(Post)
+    try {
+      const postRepository = await this.dataSource.getRepository(Post)
+      const deleteResult = await postRepository.delete(id)
 
-    const deleteResult = await postRepository.delete(id)
+      if (deleteResult.affected === 0) {
+        throw new EntityNotFoundError(Post, id)
+      }
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new Error(`Post not found with ID ${id}`)
+      }
 
-    if (deleteResult.affected === 0) {
-      throw new EntityNotFoundError(Post, 'id')
+      throw new Error(`Failed to delete post: ${error.message}`)
     }
   }
 
   async updatePost (id: string, updateData: updatePostInput): Promise<Post> {
-    const postRepository = await this.dataSource.getRepository(Post)
+    try {
+      const postRepository = await this.dataSource.getRepository(Post)
+      await postRepository.update(id, updateData)
+      const updatedPost = await postRepository.findOneOrFail({
+        where: {
+          id
+        },
+        relations: ['tags']
+      })
 
-    await postRepository.update(id, updateData)
+      return updatedPost
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) {
+        throw new Error(`Post not found with ID ${id}`)
+      }
 
-    const updatedPost = await postRepository.findOne({
-      where: { id },
-      relations: ['tags']
-    }) as Post | undefined
-
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (!updatedPost) {
-      throw new EntityNotFoundError(Post, 'id')
+      throw new Error(`Failed to update post: ${error.message}`)
     }
-    return updatedPost
   }
 }
