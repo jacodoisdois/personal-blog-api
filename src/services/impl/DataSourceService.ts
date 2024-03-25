@@ -16,17 +16,14 @@ export class DataSourceService implements IDataSourceService {
       return DataSourceService.myDataSource
     }
 
-    try {
-      DataSourceService.myDataSource = await dataSource.initialize()
-      console.info('Connection Established!')
-    } catch (error) {
-      throw new Error(`Connection Failed. Error: ${error}`)
-    }
+    DataSourceService.myDataSource = await dataSource.initialize()
+    console.info('Connection Established!')
 
     return DataSourceService.myDataSource
   }
 
   public async getRepository (entity: ObjectType<any>): Promise<Repository<any>> {
+    // eslint-disable-next-line no-useless-catch
     const connection = await this.getConnection()
     return connection?.getRepository(entity)
   }

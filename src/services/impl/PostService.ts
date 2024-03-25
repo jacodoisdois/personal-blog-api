@@ -6,6 +6,7 @@ import { POST_REPOSITORY } from '../../repositories/IPostRepository'
 import { TAG_SERVICE } from '../ITagService'
 import { TagService } from './TagService'
 import { Tag } from '../../entities/Tag'
+import { type updatePostInput, type paginatedResponse } from '../../types/types'
 
 @injectable()
 export class PostService implements IPostService {
@@ -29,5 +30,21 @@ export class PostService implements IPostService {
     } catch (e) {
       throw new Error('Error when tried to create a Post' + e)
     }
+  }
+
+  async getPosts (page: number, pageSize: number): Promise<paginatedResponse<Post>> {
+    return await this.postRepository.getPaginatedPosts(page, pageSize)
+  }
+
+  async getPost (id: string): Promise<Post> {
+    return await this.postRepository.getPost(id)
+  }
+
+  async updatePost (id: string, updateData: updatePostInput): Promise<Post> {
+    return await this.postRepository.updatePost(id, updateData)
+  }
+
+  async deletePost (id: string): Promise<void> {
+    await this.postRepository.deletePost(id)
   }
 }
