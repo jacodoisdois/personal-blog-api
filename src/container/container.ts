@@ -19,7 +19,7 @@ import { AUTH_CONTROLLER, AuthController } from '../controllers/AuthController'
 export const PostContainer = (): Container => {
   const container = new Container()
 
-  container.bind<IDataSourceService>(DATASOURCE_SERVICE).to(DataSourceService)
+  container.bind<IDataSourceService>(DATASOURCE_SERVICE).to(DataSourceService).inSingletonScope()
   container.bind<IPostRepository>(POST_REPOSITORY).to(PostRepository)
   container.bind<ITagRepository>(TAG_REPOSITORY).to(TagRepository)
   container.bind<IUserRepository>(USER_REPOSITORY).to(UserRepository)
