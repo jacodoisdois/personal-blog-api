@@ -11,15 +11,19 @@ export class DataSourceService implements IDataSourceService {
   private static myDataSource: DataSource
 
   private async getConnection (): Promise<DataSource> {
-    if (DataSourceService.myDataSource?.isInitialized) {
-      console.info('Connection Already Established!')
+    try {
+      if (DataSourceService.myDataSource?.isInitialized) {
+        console.info('Connection Already Established!')
+        return DataSourceService.myDataSource
+      }
+
+      DataSourceService.myDataSource = await dataSource.initialize()
+      console.info('Connection Established!')
+
       return DataSourceService.myDataSource
+    } catch (err) {
+      throw new Error('DataSource connection error!')
     }
-
-    DataSourceService.myDataSource = await dataSource.initialize()
-    console.info('Connection Established!')
-
-    return DataSourceService.myDataSource
   }
 
   public async getRepository (entity: ObjectType<any>): Promise<Repository<any>> {

@@ -10,6 +10,11 @@ import { type ITagRepository, TAG_REPOSITORY } from '../repositories/ITagReposit
 import { TagRepository } from '../repositories/impl/TagRepository'
 import { type ITagService, TAG_SERVICE } from '../services/ITagService'
 import { TagService } from '../services/impl/TagService'
+import { type IUserRepository, USER_REPOSITORY } from '../repositories/IUserRepository'
+import { UserRepository } from '../repositories/impl/UserRepository'
+import { AUTH_SERVICE, type IAuthService } from '../services/IAuthService'
+import AuthService from '../services/impl/AuthService'
+import { AUTH_CONTROLLER, AuthController } from '../controllers/AuthController'
 
 export const PostContainer = (): Container => {
   const container = new Container()
@@ -17,10 +22,13 @@ export const PostContainer = (): Container => {
   container.bind<IDataSourceService>(DATASOURCE_SERVICE).to(DataSourceService)
   container.bind<IPostRepository>(POST_REPOSITORY).to(PostRepository)
   container.bind<ITagRepository>(TAG_REPOSITORY).to(TagRepository)
+  container.bind<IUserRepository>(USER_REPOSITORY).to(UserRepository)
 
   container.bind<IPostService>(POST_SERVICE).to(PostService)
   container.bind<ITagService>(TAG_SERVICE).to(TagService)
+  container.bind<IAuthService>(AUTH_SERVICE).to(AuthService)
 
+  container.bind<AuthController>(AUTH_CONTROLLER).to(AuthController)
   container.bind<PostController>(POST_CONTROLLER).to(PostController)
 
   return container

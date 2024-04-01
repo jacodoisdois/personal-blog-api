@@ -23,3 +23,25 @@ export interface updatePostInput {
   content?: string
   visible?: boolean
 }
+
+export interface findUserInput {
+  emailOrUsername?: string
+  email?: string
+  username?: string
+}
+
+export interface authTokenResponse {
+  token: string
+  expired_at: string
+}
+
+export interface loginInput {
+  emailOrUsername?: string
+  password: string
+}
+
+export interface registerUserInput {
+  username: string
+  email: string
+  password: string
+}

@@ -4,10 +4,11 @@ import { inject } from 'inversify'
 import * as express from 'express'
 import { type paginatedBody, type createPostBody, type updatePostInput } from '../types/types'
 import { EntityNotFoundError } from 'typeorm'
+import { authMiddleware } from '../middlewares/auth'
 
 export const POST_CONTROLLER = Symbol.for('PostController')
 
-@controller('/posts')
+@controller('/posts', authMiddleware)
 export class PostController extends BaseHttpController implements interfaces.Controller {
   private readonly postService: IPostService
 
