@@ -21,14 +21,17 @@ export class DataSourceService implements IDataSourceService {
       console.info('Connection Established!')
 
       return DataSourceService.myDataSource
-    } catch (err) {
-      throw new Error('DataSource connection error!')
+    } catch (error) {
+      throw new Error('TypeOrmError: DataSource connection error!')
     }
   }
 
   public async getRepository (entity: ObjectType<any>): Promise<Repository<any>> {
-    // eslint-disable-next-line no-useless-catch
-    const connection = await this.getConnection()
-    return connection?.getRepository(entity)
+    try {
+      const connection = await this.getConnection()
+      return connection?.getRepository(entity)
+    } catch (error) {
+      throw new Error('TypeOrmError: Get Repository Error')
+    }
   }
 }

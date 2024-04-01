@@ -16,8 +16,8 @@ export class TagRepository implements ITagRepository {
     try {
       const tagRepository = await this.dataSource.getRepository(Tag)
       return await tagRepository.save(tags)
-    } catch (e) {
-      throw new Error(`EntityCreationError: ${e}`)
+    } catch (error) {
+      throw new Error(`EntityCreationError: ${error.message}`)
     }
   }
 

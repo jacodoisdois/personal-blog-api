@@ -37,8 +37,8 @@ export class AuthController extends BaseHttpController implements interfaces.Con
           ...user
         }
       })
-    } catch (err) {
-      res.status(400).json({ error: err.message })
+    } catch (error) {
+      res.status(400).json({ error: error.message })
     }
   }
 
@@ -57,8 +57,8 @@ export class AuthController extends BaseHttpController implements interfaces.Con
       } else {
         res.status(401).json({ error: 'Invalid credentials' })
       }
-    } catch (err) {
-      res.status(400).json({ error: err.message })
+    } catch (error) {
+      res.status(400).json({ error: error.message })
     }
   }
 }

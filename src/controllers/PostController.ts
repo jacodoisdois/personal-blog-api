@@ -26,8 +26,8 @@ export class PostController extends BaseHttpController implements interfaces.Con
       const postCreated = await this.postService.createPostAndTags(title, content, tags, visible)
 
       res.status(201).json(postCreated)
-    } catch (err) {
-      res.status(400).json({ error: err })
+    } catch (error) {
+      res.status(400).json({ error: error.message })
     }
   }
 
@@ -40,8 +40,8 @@ export class PostController extends BaseHttpController implements interfaces.Con
       res.status(200).json(
         data
       )
-    } catch (err) {
-      res.status(404).json({ error: err })
+    } catch (error) {
+      res.status(404).json({ error: error.message })
     }
   }
 
@@ -53,8 +53,8 @@ export class PostController extends BaseHttpController implements interfaces.Con
       res.status(200).json(
         data
       )
-    } catch (err) {
-      res.status(400).json({ error: err })
+    } catch (error) {
+      res.status(400).json({ error: error.message })
     }
   }
 
@@ -76,9 +76,9 @@ export class PostController extends BaseHttpController implements interfaces.Con
       res.status(200).json(
         data
       )
-    } catch (err) {
-      if (err instanceof EntityNotFoundError) res.status(404).json({ error: err })
-      res.status(400).json({ error: err })
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) res.status(404).json({ error: error.message })
+      res.status(400).json({ error: error.message })
     }
   }
 
@@ -91,9 +91,9 @@ export class PostController extends BaseHttpController implements interfaces.Con
       await this.postService.deletePost(id)
 
       res.status(204)
-    } catch (err) {
-      if (err instanceof EntityNotFoundError) res.status(404).json({ error: err })
-      res.status(400).json({ error: err })
+    } catch (error) {
+      if (error instanceof EntityNotFoundError) res.status(404).json({ error: error.message })
+      res.status(400).json({ error: error.message })
     }
   }
 }

@@ -19,9 +19,9 @@ export class UserRepository implements IUserRepository {
       await userRepository.save(user)
       const { password, ...userAttributes } = user
       return { ...userAttributes }
-    } catch (e) {
+    } catch (error) {
       console.log('Error when tried to create user')
-      throw e
+      throw error
     }
   }
 
@@ -48,9 +48,9 @@ export class UserRepository implements IUserRepository {
       })
 
       return user as unknown as User | null
-    } catch (e) {
+    } catch (error) {
       console.error('Error when tried to find user')
-      throw e
+      throw error
     }
   }
 }

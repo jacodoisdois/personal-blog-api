@@ -29,8 +29,8 @@ export class PostService implements IPostService {
 
       console.log(`Created Post with Id ${postCreated.id}!`)
       return postCreated
-    } catch (e) {
-      throw new Error('Error when tried to create a Post' + e)
+    } catch (error) {
+      throw new Error('Error when tried to create a Post' + error.message)
     }
   }
 

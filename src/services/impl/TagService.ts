@@ -20,8 +20,8 @@ export class TagService implements ITagService {
       const createdTags = await this.tagRepository.saveTags(notFoundTags)
       console.log('Tags created successfully!')
       return [...createdTags, ...foundTags]
-    } catch (e) {
-      throw new Error('Error when tried to create a Tag' + e)
+    } catch (error) {
+      throw new Error('Error when tried to create a Tag' + error.message)
     }
   }
 
