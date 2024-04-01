@@ -1,6 +1,7 @@
-import { Entity, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm'
+import { Entity, Column, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, PrimaryGeneratedColumn, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm'
 import { Tag } from './Tag'
 import { v4 as uuidv4 } from 'uuid'
+import { User } from './User'
 
 @Entity()
 export class Post {
@@ -28,14 +29,18 @@ export class Post {
   @UpdateDateColumn()
     updatedAt: Date
 
-  constructor (title: string, content: string, visible: boolean) {
-    this.title = title
-    this.content = content
-    this.visible = visible
-  }
+  @ManyToOne(() => User, (user) => user.posts)
+  @JoinColumn({ name: 'userId' })
+    user: User
 
   @BeforeInsert()
   setId (): void {
     this.id = uuidv4()
+  }
+
+  constructor (title: string, content: string, visible: boolean) {
+    this.title = title
+    this.content = content
+    this.visible = visible
   }
 }
