@@ -8,7 +8,7 @@ import { authMiddleware } from '../middlewares/auth'
 
 export const POST_CONTROLLER = Symbol.for('PostController')
 
-@controller('/posts', authMiddleware)
+@controller('/posts')
 export class PostController extends BaseHttpController implements interfaces.Controller {
   private readonly postService: IPostService
 
@@ -19,7 +19,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
     this.postService = postService
   }
 
-  @httpPost('/')
+  @httpPost('/', authMiddleware)
   public async createPost (@request() req: express.Request, @response() res: express.Response): Promise<void> {
     try {
       const { title, content, tags, visible } = req.body as createPostBody
@@ -58,7 +58,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
     }
   }
 
-  @httpPut('/:id')
+  @httpPut('/:id', authMiddleware)
   public async updatePost (
     @requestParam('id') id: string,
       @request() req: express.Request,
@@ -82,7 +82,7 @@ export class PostController extends BaseHttpController implements interfaces.Con
     }
   }
 
-  @httpDelete('/:id')
+  @httpDelete('/:id', authMiddleware)
   public async deletePost (
     @requestParam('id') id: string,
       @response() res: express.Response

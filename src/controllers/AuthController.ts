@@ -4,6 +4,7 @@ import { AUTH_SERVICE, IAuthService } from '../services/IAuthService'
 import express from 'express'
 import { type loginInput, type registerUserInput } from '../types/types'
 import { generateToken } from '../utils/jwtToken'
+import { TypeORMError } from 'typeorm'
 
 export const AUTH_CONTROLLER = Symbol.for('AuthController')
 
