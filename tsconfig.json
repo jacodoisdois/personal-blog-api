@@ -17,5 +17,5 @@
      "strictPropertyInitialization": false,
      "useUnknownInCatchVariables": false
   },
-  "include": [".eslintrc.js", "src/**/*"]
+  "include": [".eslintrc.js", "src/**/*", "tests/**/*", "jest.config.js"]
 }
